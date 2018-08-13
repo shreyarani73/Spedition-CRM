@@ -1,0 +1,7 @@
+db.sqlite3
+*.pyc
+__pyache__
+env
+venv
+bin
+sbin
