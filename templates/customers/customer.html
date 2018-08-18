@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %}Customers{% endblock title %}
+
+{% block content %}
+<div class="row page-titles">
+    <div class="col-md-5 col-8 align-self-center">
+        <h3 class="text-themecolor">Customers</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0)">You are viewing {{customer.company_name}}</a>
+            </li>            
+        </ol>
+    </div>    
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="row">
+                {% if messages %}
+                    {% for message in messages %}
+                        <span {% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>    
+            <div class="card-block">                
+                <h4>Basic Information</h4>
+                <hr />                
+                <form name="customer" action="{% url "customers:view" customer.pk %}" method="post" class="form-horizontal form-material">
+                    {% csrf_token %}
+                    <div class="row">
+                        {% for field in form %}
+                            <div class="col-md-2 input-form">
+                                {{field.label}}<br />
+                                {{field|add_class:"form-control form-control-line"}}
+                            </div>
+                        {% endfor %}                                 
+                    </div>
+                    <input type="submit" name="submit" value="Update Customer" class="btn btn-success" />                    
+                </form>
+            </div>
+            <div class="card-block">
+                <h4>List of documents uploaded for {{customer.company_name}}</h4>
+                <br />                
+                <div class="row">
+                    {% if documents %}
+                        {% for each in documents %}
+                            <div class="col-md-4">
+                                <p><a href="{{each.document_file.url}}" target="_blank">{{forloop.counter}}. {{each.document_type}} Certificate for {{customer.company_name}}</a></p>
+                            </div>
+                        {% endfor %}                        
+                    {% else %}
+                        <div class="col-md-12">
+                            <p>No documents have been uploaded for this user</p>
+                        </div>
+                    {% endif %}                    
+                </div>
+                <h4>Upload a document</h4>
+                <form name="upload-document" method="post" action="{% url "customers:upload-document" customer.pk %}" class="form-horizontal form-material" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            Select Document Type<br />
+                            <select name="document_type" class="form-control form-control-line">
+                                <option selected>----------</option>
+                                <option>GST Number Certificate</option>
+                                <option>Bank Statement or Guarantee</option>
+                                <option>Bank Instruement Copy</option>
+                                <option>Company Registration Certificate</option>
+                                <option>Address Proof</option>
+                                <option>Business Owner KYC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                                Select document<br />
+                                <input type="file" name="document_file" class="form-control-line form-control" />
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" value="Upload Document" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
