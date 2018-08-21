@@ -43,7 +43,8 @@
             {% include "header.html" %}  
         {% endif %}
             <div class="page-wrapper">                              
-                <div class="container-fluid">                    
+                <div class="container-fluid">
+                    {% include "messages.html" %}                    
                     {% block content %}
                     {% endblock content %}
                 </div>

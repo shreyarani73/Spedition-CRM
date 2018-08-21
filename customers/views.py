@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic.edit import CreateView
-from django.shortcuts import render
 from .models import Customer as CustomerModel
 from .models import Documents
 from .forms import CustomerForm, CustomerUpdateForm

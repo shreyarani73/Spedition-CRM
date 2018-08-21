@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Jobs{% endblock title %}
+
+{% block content %}
+<div class="row page-titles">
+    <div class="col-md-5 col-8 align-self-center">
+        <h3 class="text-themecolor">Jobs</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0)">Home</a>
+            </li>            
+        </ol>
+    </div>    
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-block">
+                <h4 class="card-title">List of Jobs at Spedition India</h4>
+                <a href="{% url "jobs:add" %}"><button class="btn btn-sucess">Create a new job</button></a>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Client</th>
+                                <th>Category</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Job Status</th>
+                                <th>Job Description</th>                                
+                            </tr>                            
+                        </thead>
+                        <tbody>
+                            {% for each in jobs %}
+                                <tr>
+                                    <td><a href="{% url "jobs:view" each.id %}">{{each.id}}</a></td>
+                                    <td><a href="{% url "jobs:view" each.id %}">{{each.client.company_name}}</a></td>
+                                    <td>{{each.job_category}}</td>
+                                    <td>{{each.start_date}}</td>
+                                    <td>{{each.end_date}}</td>
+                                    <td>{{each.job_status}}</td>
+                                    <td>{{each.job_description}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
