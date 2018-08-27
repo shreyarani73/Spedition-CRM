@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %}Job View{% endblock title %}
+
+{% block content %}
+<div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor">Invoices</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0)">You are editing invoice number {{invoice.invoice_id}}</a>
+                </li>            
+            </ol>
+        </div>    
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-block">
+                <h4>Invoice ID: {{invoice.invoice_id}}</h4>                
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Date issued:</strong> {{invoice.date_added}}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>To client</strong>: {{invoice.client}}
+                    </div>
+                    <div class="col-md-3">
+                        Due Date: {{invoice.due_date}}
+                    </div>
+                    <div class="col-md-3">
+                        Total Amount Due: {{invoice.total}}
+                    </div>
+                </div>
+                <hr />
+                
+                    {% csrf_token %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>S.No.</td>
+                                <td>Name</td>
+                                <td>Quantity</td>
+                                <td>Currency</td>
+                                <td>Rate</td>
+                                <td>Exc. Rate</td>
+                                <td>Tax</td>                                
+                                <td>Total</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>                            
+                            <tr>
+                                <td></td>
+                                <form name="add-invoice-item" action="{% url "invoices:add-invoice-item" invoice.id %}" method="post" class="form-horizontal form-material">
+                                    {% csrf_token %}
+                                    {% for field in new_invoice_item_form %}
+                                        <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
+                                    {% endfor %}
+                                    <td><input type="submit" name="add-invoice-item" value="Add Invoice Item" class="btn btn-success"></td>
+                                </form>                                
+                            </tr>                            
+
+                            {% for each in invoice_items %}
+                            <form name="job" action="{% url "invoices:add" %}" method="post" class="form-horizontal form-material">
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    {% for field in each %}                                        
+                                        <td>
+                                            {% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            </form>
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+
+                    <!-- Tables for payments -->
+                    <table class="table">
+                        <h3>Payments</h3>
+                        <thead>
+                            <tr>
+                                <td>S.No.</td>
+                                <td>Date</td>
+                                <td>Amount</td>
+                                <td>Payment Mode</td>
+                                <td>Notes</td>                                
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>                            
+                            <tr>
+                                <td></td>
+                                <form name="add-payment-item" action="{% url "invoices:add-payment" invoice.id %}" method="post" class="form-horizontal form-material">
+                                    {% csrf_token %}
+                                    {% for field in new_payment_form %}
+                                        <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
+                                    {% endfor %}
+                                    <td><input type="submit" name="add-payment-item" value="Add Payment" class="btn btn-success"></td>
+                                </form>                                
+                            </tr>                            
+
+                            {% for each in payment_forms %}
+                            <form name="job" action="{% url "invoices:add" %}" method="post" class="form-horizontal form-material">
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    {% for field in each %}                                        
+                                        <td>
+                                            {% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            </form>
+                            {% endfor %}    
+                        </tbody>
+                    </table>
+
+                    
+                    <input type="submit" name="submit-job-form" value="Save this invoice" class="btn btn-success" />                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

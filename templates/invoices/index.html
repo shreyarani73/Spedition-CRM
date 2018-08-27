@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Invoices{% endblock title %}
+
+{% block content %}
+<div class="row page-titles">
+    <div class="col-md-5 col-8 align-self-center">
+        <h3 class="text-themecolor">Invoices</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0)">Home</a>
+            </li>            
+        </ol>
+    </div>    
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-block">
+                <h4 class="card-title">List of Invoices at Spedition India</h4>
+                <a href="{% url "invoices:add" %}"><button class="btn btn-sucess">Create a new invoice</button></a>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>For Job Id</th>
+                                <th>Client Name</th>
+                                <th>Invoice Date</th>
+                                <th>Amount</th>
+                                <th>Balance Due</th>
+                                <th>Due Date</th>                                
+                            </tr>                            
+                        </thead>
+                        <tbody>
+                            {% for each in invoices %}
+                                <tr>
+                                    <td><a href="{% url "invoices:view" each.id %}">{{each.invoice_id}}</a></td>
+                                    <td><a href="{% url "invoices:view" each.id %}">{{each.job.id}}</a></td>
+                                    <td>{{each.client.company_name}}</td>
+                                    <td>{{each.date_added}}</td>
+                                    <td>INR {{each.total}}</td>
+                                    <td>Not cleared</td>
+                                    <td>{{each.due_date}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

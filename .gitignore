@@ -1,6 +1,6 @@
 db.sqlite3
 *.pyc
-__pyache__
+__pycache__
 env
 venv
 bin
