@@ -3,6 +3,9 @@ from django.contrib import messages
 from django.views import View
 from .models import Job
 from .forms import NewJobForm, UpdateJobForm
+from invoices.models import Invoice, Payments
+from expenses.models import Expense
+from django.db.models import Sum
 
 def Index(request):
     all_jobs = Job.objects.all()
@@ -33,16 +36,24 @@ class JobView(View):
         job = Job.objects.get(pk=job_id)
         form = UpdateJobForm(instance=job)
 
+        expenses = Expense.objects.filter(job=job)
+        expenses_total = expenses.aggregate(Sum("amount"))["amount__sum"]
+
+        invoices = Invoice.objects.filter(job=job)
+        invoices_total = invoices.aggregate(Sum("total"))["total__sum"]
+
+        netpl = invoices_total - expenses_total
+
         return render(request, "jobs/job.html", {
-            "job":job, "form": form,
+            "job":job, "form": form, "netpl": netpl,
+            "expenses": expenses, "expenses_total": expenses_total,
+            "invoices": invoices, "invoices_total": invoices_total,
         })
 
     def post(self, request, job_id):
         job = Job.objects.get(pk=job_id)
         form = UpdateJobForm(request.POST, instance=job)
-        form.save()
-
-        print (form.errors)
+        form.save()        
 
         messages.add_message(request, messages.SUCCESS, "Job has been succesfully updated")
 

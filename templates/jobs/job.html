@@ -39,4 +39,74 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-block">
+                <h3>Expenses for job {{job.id}}. Total Revenue: INR {{invoices_total}}</h3>   
+                <hr />
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Invoice ID</td>
+                                <td>Date</td>
+                                <td>Amount</td>                                
+                            </tr>                            
+                        </thead>
+                        <tbody>
+                            {% for each in invoices %}
+                            <tr>
+                                <td>{{each.invoice_id}}</td>
+                                <td>{{each.total}}</td>
+                                <td>{{each.date_added}}</td>                                
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>                
+                </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-block">
+                <h3>Expenses for job {{job.id}}. Total Expenses: INR {{expenses_total}}</h3>   
+                <hr />
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Expense Id</td>
+                                <td>Amount</td>
+                                <td>Date</td>
+                                <td>Category</td>
+                            </tr>                            
+                        </thead>
+                        <tbody>
+                            {% for each in expenses %}
+                            <tr>
+                                <td>{{each.id}}</td>
+                                <td>{{each.amount}}</td>
+                                <td>{{each.date_added}}</td>
+                                <td>{{each.category}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>                
+            </div>
+        </div>
+    </div>   
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-block">
+                <h3>Net Profit/Loss</h3>   
+                <hr />
+                <h3>INR {{netpl}}</h3>               
+            </div>
+        </div>
+    </div>    
+</div>
+
 {% endblock content %}
