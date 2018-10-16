@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from customers.models import Customer
 from django.contrib.auth.models import User
+from crm import choices
 
 JOB_STATUS = (
     ("Open", "Open"),    
@@ -32,4 +33,15 @@ class Job(models.Model):
     def __str__(self):
         return "Job number " + str(self.pk) + " for client:" + self.client.company_name + " from " + str(self.shipping_from) + " " + str(self.shipping_to)
 
-    
+
+class Process(models.Model):
+    date_added = models.DateField(default=timezone.now)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    process_name = models.CharField(max_length=150)
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
+    notes = models.TextField(blank=True, null=True)
+    closed = models.BooleanField(default=False, choices=choices.YESNO)
+    send_email = models.BooleanField(default=False, choices=choices.YESNO)
+
+    def __str__(self):
+        return "Process for Job id: %s" % str(self.job.id )

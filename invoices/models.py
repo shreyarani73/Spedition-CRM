@@ -20,8 +20,7 @@ PAYMENT_MODES = (
 class Invoice(models.Model):    
     date_added = models.DateField(default=timezone.now)
     invoice_id = models.CharField(max_length=150, blank=True, null=True, unique=True)
-    due_date = models.DateField(blank=True, null=True)
-    client = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    due_date = models.DateField(blank=True, null=True)    
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     total = models.FloatField(default=0.00)
 
