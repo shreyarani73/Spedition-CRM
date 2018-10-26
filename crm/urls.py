@@ -9,5 +9,6 @@ urlpatterns = [
     path('jobs/', include("jobs.urls", namespace="jobs")),
     path('invoices/', include("invoices.urls", namespace="invoices")),
     path('expenses/', include("expenses.urls", namespace="expenses")),
+    path('quotations/', include("quotations.urls", namespace="quotations")),
     path('', include("authentication.urls", namespace="authentication")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

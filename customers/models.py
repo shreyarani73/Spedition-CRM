@@ -22,6 +22,12 @@ class Customer(models.Model):
     credit_days = models.IntegerField(default=30)
     approved = models.BooleanField(default=False, choices=YESNO)
     sales_person = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    point_of_contact_for_client_name = models.CharField(max_length=150, blank=True, null=True)
+    point_of_contact_for_client_email = models.CharField(max_length=150, blank=True, null=True)
+    point_of_contact_for_client_phone = models.CharField(max_length=150, blank=True, null=True)
+    accountant_for_client_name = models.CharField(max_length=150, blank=True, null=True)
+    accountant_for_client_email = models.CharField(max_length=150, blank=True, null=True)
+    accountant_for_client_phone = models.CharField(max_length=150, blank=True, null=True)
 
     def __str__(self):
         return self.company_name

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %}Add Quotation{% endblock title %}
+
+{% block content %}
+<div class="row page-titles">
+    <div class="col-md-5 col-8 align-self-center">
+        <h3 class="text-themecolor">Quotations</h3>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="javascript:void(0)">You are viewing quotation ID: {{quotation.id}}</a>
+            </li>            
+        </ol>
+    </div>    
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-block">
+                <!-- <h4>You are creating a new invoice. You will be able to enter invoice items once you have saved this invoice.</h4> -->
+                <!-- <hr /> -->
+                <form name="quotation-update" action="{% url "quotations:view" quotation.id %}" method="post" class="form-horizontal form-material">
+                    {% csrf_token %}
+                    <div class="row">                        
+                        {% for field in form %}
+                            <div class="col-md-4 input-form">
+                                {{field.label}}<br />
+                                {% render_field field class="form-control form-control-line" %}
+                            </div>                            
+                        {% endfor %}                        
+                    </div>
+                    <input type="submit" name="submit-job-form" value="Update this quotation" class="btn btn-success" />
+                    <input type="submit" name="send-email" value="Send as email to client" class="btn btn-success" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
