@@ -25,11 +25,11 @@ class AddJob(View):
 
     def post(self, request):
         new_job = NewJobForm(request.POST)
-        new_job.save()
+        job = new_job.save()
 
         messages.add_message(request, messages.SUCCESS, "Your new job has been created")
 
-        return redirect("jobs:view", job_id=new_job.id)
+        return redirect("jobs:view", job_id=job.id)
 
 class JobView(View):
     def get(self, request, job_id):

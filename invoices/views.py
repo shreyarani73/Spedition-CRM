@@ -25,7 +25,7 @@ class AddInvoice(View):
         invoice = form.save(commit=False)
         invoice.total = 0
         invoice.save()
-        invoice.invoice_id="SPEDITION/INVOICE/" + str(invoice.client.id) + "/" + str(invoice.pk)
+        invoice.invoice_id="SPEDITION/INVOICE/%s" % (invoice.pk)
         invoice.save()
 
 
