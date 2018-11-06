@@ -74,7 +74,7 @@ def NewInvoiceItem(request, invoice_id):
 
     invoice.total = invoice.total + sub_total
     
-    client = invoice.client
+    client = invoice.job.client
     client.credit_amount = client.credit_amount - sub_total
     if client.credit_amount < 0:
         messages.add_message(request, messages.SUCCESS, "Credit amount not enough for client")

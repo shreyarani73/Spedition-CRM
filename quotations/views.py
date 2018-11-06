@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from .models import Quotation
+from .models import Quotation, QuotationItem
 from django.views import View
-from .forms import QuotationForm, QuotationUpdateForm
+from .forms import QuotationForm, QuotationUpdateForm, NewQuotationItemForm, QuotationItemUpdateForm
 from django.contrib import messages
 
 def index(request):
@@ -10,6 +10,28 @@ def index(request):
     return render(request, "quotations/index.html", {
         "quotations": quotations,
     })
+
+def addQuotationItem(request, quotation_id):
+    form = NewQuotationItemForm(request.POST)    
+    item = form.save(commit=False)
+    quotation = Quotation.objects.get(pk=quotation_id)
+    item.quotation = quotation
+    
+    service_total = item.quantity * item.rate * item.exchange_rate
+    taxes = service_total * item.tax_rate / 100
+
+    item.total = service_total + taxes
+    quotation.service_total = service_total + taxes
+    item.save()    
+    quotation.save()
+
+    messages.add_message(request, messages.SUCCESS, "Quotation item added succesfully")
+
+    return redirect("quotations:view", quotation_id=quotation_id)
+
+def updateQuotationItem(request):
+    pass
+
 
 class AddQuotation(View):
     def get(self, request):
@@ -41,8 +63,16 @@ class ViewQuotation(View):
         quotation = Quotation.objects.get(pk=quotation_id)
         form = QuotationUpdateForm(instance=quotation)
 
+        quotation_items = QuotationItem.objects.filter(quotation=quotation).order_by("-pk")
+        new_quotation_item_form = NewQuotationItemForm()
+        quotation_item_forms = []
+        for each in quotation_items:
+            form = QuotationItemUpdateForm(instance=each)
+            quotation_item_forms.append(form)
+
         return render(request, "quotations/view.html", {
-            "form":form, "quotation": quotation,
+            "form":form, "quotation": quotation, "quotation_items": quotation_item_forms,
+            "new_quotation_item_form": new_quotation_item_form,
         })
     
     def post(self, request, quotation_id):

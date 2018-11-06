@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load widget_tweaks %}
 
-{% block title %}Add Quotation{% endblock title %}
+{% block title %}View/Edit Quotation{% endblock title %}
 
 {% block content %}
 <div class="row page-titles">
@@ -35,6 +35,46 @@
                     <input type="submit" name="submit-job-form" value="Update this quotation" class="btn btn-success" />
                     <input type="submit" name="send-email" value="Send as email to client" class="btn btn-success" />
                 </form>
+                <hr />
+                <h3>Quotation Items / Services to be rendered for client</h3><hr />
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>S. No</td>
+                            <td>Service Name</td>
+                            <td>Quantity</td>
+                            <td>Currency</td>
+                            <td>Rate</td>
+                            <td>Exchange Rate</td>
+                            <td>Tax</td>
+                            <td>Total</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <form name="add-quotation-item" action="{% url "quotations:add-quotation-item" quotation.id %}" method="post" class="form-horizontal form-material">
+                                {% csrf_token %}
+                                {% for field in new_quotation_item_form %}
+                                    <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
+                                {% endfor %}
+                                <td><input type="submit" value="Add Item" class="btn btn-success" /></td>
+                            </form>
+                        </tr>
+
+                        {% for each in quotation_items %}
+                        <form name="update-quotation-item" action="" method="post" class="form-horizontal form-material">
+                            {% csrf_token %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                {% for field in each %}
+                                    <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
+                                {% endfor %}
+                            </tr>
+                        </form>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
