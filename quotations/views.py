@@ -21,7 +21,7 @@ def addQuotationItem(request, quotation_id):
     taxes = service_total * item.tax_rate / 100
 
     item.total = service_total + taxes
-    quotation.service_total = service_total + taxes
+    quotation.service_total = quotation.service_total + service_total + taxes
     item.save()    
     quotation.save()
 
@@ -29,8 +29,29 @@ def addQuotationItem(request, quotation_id):
 
     return redirect("quotations:view", quotation_id=quotation_id)
 
-def updateQuotationItem(request):
-    pass
+def updateQuotationItem(request, quotation_id, quotation_item_id):
+    quotation = Quotation.objects.get(pk=quotation_id)
+    quotation_item = QuotationItem.objects.get(pk=quotation_item_id)
+
+    form = QuotationItemUpdateForm(request.POST, instance=quotation_item)
+    qitem = form.save(commit=False)
+
+    total = qitem.quantity * qitem.rate * qitem.exchange_rate
+    taxes = total * qitem.tax_rate/100
+
+    qitem.total = total + taxes
+    qitem.save()
+
+    qitems_all = QuotationItem.objects.filter(quotation=quotation)
+    st = 0
+    for each in qitems_all:
+        st = st + each.total 
+    quotation.service_total = st
+    quotation.save()
+
+    messages.add_message(request, messages.SUCCESS, "Quotation item been updated")
+
+    return redirect("quotations:view", quotation_id=quotation_id)
 
 
 class AddQuotation(View):
@@ -46,11 +67,6 @@ class AddQuotation(View):
         if form.errors:
             print (form.errors)
         quotation = form.save(commit=False)
-
-        total = quotation.service_quantity * quotation.service_rate * quotation.service_exch_rate
-        taxes = total*quotation.taxes/100
-        quotation.service_total = total + taxes
-
         quotation.save()
 
         messages.add_message(request, messages.SUCCESS, "Quotation has been succesfully created")
@@ -61,17 +77,20 @@ class AddQuotation(View):
 class ViewQuotation(View):
     def get(self, request, quotation_id):
         quotation = Quotation.objects.get(pk=quotation_id)
-        form = QuotationUpdateForm(instance=quotation)
+        formq = QuotationUpdateForm(instance=quotation)
 
         quotation_items = QuotationItem.objects.filter(quotation=quotation).order_by("-pk")
         new_quotation_item_form = NewQuotationItemForm()
         quotation_item_forms = []
         for each in quotation_items:
-            form = QuotationItemUpdateForm(instance=each)
-            quotation_item_forms.append(form)
+            record = {
+                "id": each.id,
+                "form": QuotationItemUpdateForm(instance=each)
+            }
+            quotation_item_forms.append(record)
 
         return render(request, "quotations/view.html", {
-            "form":form, "quotation": quotation, "quotation_items": quotation_item_forms,
+            "form":formq, "quotation": quotation, "quotation_items": quotation_item_forms,
             "new_quotation_item_form": new_quotation_item_form,
         })
     

@@ -63,13 +63,15 @@
                         </tr>
 
                         {% for each in quotation_items %}
-                        <form name="update-quotation-item" action="" method="post" class="form-horizontal form-material">
+                        <form name="update-quotation-item" action="{% url "quotations:edit-quotation-item" quotation.id each.id %}" method="post" class="form-horizontal form-material">
                             {% csrf_token %}
                             <tr>
                                 <td>{{forloop.counter}}</td>
-                                {% for field in each %}
+                                {% for field in each.form %}
                                     <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
                                 {% endfor %}
+                                <td><input type="submit" value="Update" class="btn btn-success" /></td>
+                                <td>Delete</td>
                             </tr>
                         </form>
                         {% endfor %}
