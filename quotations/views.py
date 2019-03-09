@@ -47,9 +47,9 @@ class AddQuotation(View):
             print (form.errors)
         quotation = form.save(commit=False)
 
-        total = quotation.quantity * quotation.rate * quotation.exchange_rate #error
-        taxes = total*quotation.taxes/100
-        quotation.service_total = total + taxes
+        #total = quotation.quantity * quotation.rate * quotation.exchange_rate #error
+        #taxes = total*quotation.taxes/100
+        #quotation.service_total = total + taxes
 
         quotation.save()
 

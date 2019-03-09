@@ -72,7 +72,7 @@ def NewInvoiceItem(request, invoice_id):
 
     invoice_item.total = sub_total
 
-    invoice.total = invoice.total + sub_total
+    invoice.total = invoice.total + invoice_item.total
     
     client = invoice.job.client
     client.credit_amount = client.credit_amount - sub_total
@@ -97,10 +97,10 @@ def AddPaymentToInvoice(request, invoice_id):
     payment.invoice = invoice
     
     invoice.total = invoice.total - payment.amount
-    client = invoice.client #error
-    client.credit_amount = client.credit_amount + payment.amount
+    #client = invoice.client #error
+    #client.credit_amount = client.credit_amount + payment.amount
+    #client.save()
     
-    client.save()
     payment.save()
     invoice.save()
 
