@@ -16,7 +16,7 @@ class Quotation(models.Model):
     company_name = models.CharField(max_length=50)
     address = models.CharField(max_length=150)
     email = models.EmailField(max_length=50)
-    mobile = models.BigIntegerField()    
+    mobile = models.CharField(blank=True, max_length=10)    
     service_total = models.FloatField(default=0.00, blank=True, null=True)
     taxes = models.FloatField(default=18.00, choices=(
         (5, "5% GST"),

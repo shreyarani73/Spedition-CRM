@@ -25,7 +25,7 @@ class AddJob(View):
 
     def post(self, request):
         new_job = NewJobForm(request.POST)
-        job = new_job.save()
+        job = new_job.save() #error if not valid data
 
         messages.add_message(request, messages.SUCCESS, "Your new job has been created")
 
