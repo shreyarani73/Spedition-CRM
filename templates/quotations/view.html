@@ -71,7 +71,7 @@
                                     <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
                                 {% endfor %}
                                 <td><input type="submit" value="Update" class="btn btn-success" /></td>
-                                <td>Delete</td>
+                                <td><a href="{% url "quotations:delete-quotation-item" quotation.id each.id %}"  class="btn btn-success">Delete</a></td>
                             </tr>
                         </form>
                         {% endfor %}

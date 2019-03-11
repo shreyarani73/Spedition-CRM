@@ -46,10 +46,28 @@ def updateQuotationItem(request, quotation_id, quotation_item_id):
     st = 0
     for each in qitems_all:
         st = st + each.total 
-    quotation.service_total = st
-    quotation.save()
+        quotation.service_total = st
+        quotation.save()
 
     messages.add_message(request, messages.SUCCESS, "Quotation item been updated")
+
+    return redirect("quotations:view", quotation_id=quotation_id)
+
+def deleteQuotationItem(request, quotation_id, quotation_item_id):
+    quotation = Quotation.objects.get(pk=quotation_id)
+    quotation_item = QuotationItem.objects.get(pk=quotation_item_id)
+    quotation_item.delete()
+    
+    quotation_items_all = QuotationItem.objects.filter(quotation=quotation)
+    st = 0
+    for each in quotation_items_all:
+        st = st + each.total 
+        quotation.service_total = st
+        quotation.save()
+
+       
+        
+    messages.add_message(request, messages.SUCCESS, "Quotation item successfully deleted")
 
     return redirect("quotations:view", quotation_id=quotation_id)
 
