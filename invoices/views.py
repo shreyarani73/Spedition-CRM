@@ -97,10 +97,10 @@ def AddPaymentToInvoice(request, invoice_id):
     payment.invoice = invoice
     
     invoice.total = invoice.total - payment.amount
-    #customer = invoice.customer
-    #customer.credit_amount = customer.credit_amount + payment.amount
+    client = invoice.job.client
+    client.credit_amount = client.credit_amount + payment.amount
     
-    #customer.save()
+    client.save()
     payment.save()
     invoice.save()
 
