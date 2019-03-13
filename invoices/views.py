@@ -3,6 +3,7 @@ from django.views import View
 from .models import Invoice, InvoiceItem, Payments
 from .forms import NewInvoice, InvoiceItemForm, NewInvoiceItemForm, InvoicePaymentForm, NewInvoicePaymentForm
 from django.contrib import messages
+from django.db.models import Sum
 
 def Index(request):
     invoices = Invoice.objects.all()
@@ -43,8 +44,11 @@ class InvoiceView(View):
         payment_forms = []
         new_payment_form = NewInvoicePaymentForm()
         for each in payments:
-            form = InvoicePaymentForm(instance=each)
-            payment_forms.append(form)
+            record = {
+                "id": each.id,
+                "form": InvoicePaymentForm(instance=each)
+            }
+            payment_forms.append(record)
         
         for each in invoice_items:
             form = InvoiceItemForm(instance=each)
@@ -97,11 +101,27 @@ def AddPaymentToInvoice(request, invoice_id):
     payment.invoice = invoice
     
     invoice.total = invoice.total - payment.amount
-    client = invoice.client
+    client = invoice.job.client
     client.credit_amount = client.credit_amount + payment.amount
     
     client.save()
     payment.save()
+    invoice.save()
+
+    return redirect("invoices:view", invoice_id=invoice_id)
+
+
+def updatePayment(request, invoice_id, payment_id):
+    payment = Payments.objects.get(pk=payment_id)
+    invoice = payment.invoice
+
+    form = InvoicePaymentForm(request.POST, instance=payment)
+    update = form.save()
+
+    invoices_sum = InvoiceItem.objects.filter(invoice=invoice).aggregate(Sum("total"))
+    payments_sum = Payments.objects.filter(invoice=invoice).aggregate(Sum("amount"))
+
+    invoice.total = invoices_sum["total__sum"]-payments_sum["amount__sum"]
     invoice.save()
 
     return redirect("invoices:view", invoice_id=invoice_id)

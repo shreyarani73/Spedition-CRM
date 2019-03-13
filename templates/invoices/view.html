@@ -108,14 +108,16 @@
                             </tr>                            
 
                             {% for each in payment_forms %}
-                            <form name="job" action="{% url "invoices:add" %}" method="post" class="form-horizontal form-material">
+                            <form name="job" action="{% url "invoices:update-payment" invoice.id each.id %}" method="post" class="form-horizontal form-material">
+                                {% csrf_token %}
                                 <tr>
                                     <td>{{forloop.counter}}</td>
-                                    {% for field in each %}                                        
+                                    {% for field in each.form %}                                        
                                         <td>
                                             {% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}
                                         </td>
                                     {% endfor %}
+                                    <td><input type="submit" value="Update" name="update" class="btn btn-success" /></td>
                                 </tr>
                             </form>
                             {% endfor %}    

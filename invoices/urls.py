@@ -8,5 +8,6 @@ urlpatterns = [
     path('view/<int:invoice_id>', views.InvoiceView.as_view(), name="view"),
     path('view/<int:invoice_id>/add-invoice-item', views.NewInvoiceItem, name="add-invoice-item"),
     path('view/<int:invoice_id>/add-payment', views.AddPaymentToInvoice, name="add-payment"),
+    path('view/<int:invoice_id>/update-payment/<int:payment_id>', views.updatePayment, name="update-payment"),
     path('', views.Index, name="index"),
 ]
