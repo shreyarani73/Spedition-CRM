@@ -25,6 +25,7 @@ class AddInvoice(View):
         form = NewInvoice(request.POST)
         invoice = form.save(commit=False)
         invoice.total = 0
+        invoice.balance_due = 0 
         invoice.save()
         invoice.invoice_id="SPEDITION/INVOICE/%s" % (invoice.pk)
         invoice.save()
@@ -77,6 +78,7 @@ def NewInvoiceItem(request, invoice_id):
     invoice_item.total = sub_total
 
     invoice.total = invoice.total + sub_total
+    invoice.balance_due = invoice.balance_due + sub_total
     
     client = invoice.job.client
     client.credit_amount = client.credit_amount - sub_total
@@ -98,9 +100,8 @@ def AddPaymentToInvoice(request, invoice_id):
     invoice = Invoice.objects.get(pk=invoice_id)
     form = NewInvoicePaymentForm(request.POST)
     payment = form.save(commit=False)
-    payment.invoice = invoice
     
-    invoice.total = invoice.total - payment.amount
+    invoice.balance_due = invoice.balance_due - payment.amount
     client = invoice.job.client
     client.credit_amount = client.credit_amount + payment.amount
     
@@ -121,7 +122,31 @@ def updatePayment(request, invoice_id, payment_id):
     invoices_sum = InvoiceItem.objects.filter(invoice=invoice).aggregate(Sum("total"))
     payments_sum = Payments.objects.filter(invoice=invoice).aggregate(Sum("amount"))
 
-    invoice.total = invoices_sum["total__sum"]-payments_sum["amount__sum"]
+    invoice.balance_due = invoices_sum["total__sum"]-payments_sum["amount__sum"]
     invoice.save()
+
+    return redirect("invoices:view", invoice_id=invoice_id)
+
+def deletePayment(request, invoice_id, payment_id):
+    payment = Payments.objects.get(pk=payment_id)    
+    invoice = payment.invoice
+    payment.delete()
+
+    #payment_all = Payments.objects.filter(invoice=invoice)
+    
+    invoices_sum = InvoiceItem.objects.filter(invoice=invoice).aggregate(Sum("total"))["total__sum"]
+    payments_sum = Payments.objects.filter(invoice=invoice).aggregate(Sum("amount"))["amount__sum"]
+
+    if invoices_sum == None:
+        invoices_sum = 0
+    if payments_sum == None:
+        payments_sum = 0
+    
+
+    amount_due = invoices_sum - payments_sum
+    invoice.balance_due = amount_due
+    invoice.save()
+
+    messages.add_message(request, messages.SUCCESS, "Payment has been deleted")
 
     return redirect("invoices:view", invoice_id=invoice_id)

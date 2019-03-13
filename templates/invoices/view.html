@@ -23,17 +23,20 @@
                 <h4>Invoice ID: {{invoice.invoice_id}}</h4>                
                 <hr />
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <strong>Date issued:</strong> {{invoice.date_added}}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <strong>To client</strong>: {{invoice.job.client}}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         Due Date: {{invoice.due_date}}
                     </div>
-                    <div class="col-md-3">
-                        Total Amount Due: {{invoice.total}}
+                    <div class="col-md-2">
+                        Total Balance Due: ₹{{invoice.balance_due|floatformat:2}}
+                    </div>
+                    <div class="col-md-2">
+                        Total Amount: ₹{{invoice.total|floatformat:2}}
                     </div>
                 </div>
                 <hr />
@@ -118,6 +121,7 @@
                                         </td>
                                     {% endfor %}
                                     <td><input type="submit" value="Update" name="update" class="btn btn-success" /></td>
+                                    <td><a href="{% url "invoices:delete-payment" invoice.id each.id %}"  class="btn btn-success" >Delete</a></td>
                                 </tr>
                             </form>
                             {% endfor %}    
