@@ -52,8 +52,11 @@ class InvoiceView(View):
             payment_forms.append(record)
         
         for each in invoice_items:
-            form = InvoiceItemForm(instance=each)
-            invoice_items_forms.append(form)
+            record = {
+                "id" : each.id,
+                "form": InvoiceItemForm(instance=each)
+            }
+            invoice_items_forms.append(record)
 
         return render(request, "invoices/view.html", {
             "invoice": invoice, "invoice_items": invoice_items_forms,
@@ -94,6 +97,60 @@ def NewInvoiceItem(request, invoice_id):
         messages.add_message(request, messages.SUCCESS, "Invoice item added")
 
         return redirect("invoices:view", invoice_id=invoice_id)
+
+def UpdateInvoiceItem(request, invoice_id, invoice_item_id):
+    #invoice = Invoice.objcets.get(pk=invoice_id)
+    invoice_item = InvoiceItem.objects.get(pk=invoice_item_id)
+    invoice = invoice_item.invoice
+    form = InvoiceItemForm(request.POST, instance=invoice_item)
+    update_item = form.save(commit=False)
+    update_item.invoice = invoice
+    
+    sub_total = update_item.quantity * update_item.rate * update_item.exchange_rate
+    tax = sub_total * update_item.tax_rate/100
+    sub_total = sub_total + tax
+    update_item.total = sub_total
+    update_item.save()
+    items_all = InvoiceItem.objects.filter(invoice=invoice)
+    st = 0
+    for each in items_all:
+        st = st + each.total 
+    invoice.total = st
+    invoice.balance_due = st
+
+    client = invoice.job.client
+    client.credit_amount = client.credit_amount - sub_total
+    #invoice.total = invoice.total + sub_total
+    #invoice.balance_due  = invoice.balance_due + sub_total
+    client.save()
+    invoice.save()
+    
+
+    messages.add_message(request, messages.SUCCESS, "Invoice item updated")
+
+    return redirect ("invoices:view", invoice_id=invoice_id)
+
+def DeleteInvoiceItem(request, invoice_id, invoice_item_id):
+    #invoice = Invoice.objects.get(pk=invoice_id)
+    invoice_item = InvoiceItem.objects.get(pk=invoice_item_id)
+    invoice = invoice_item.invoice
+    invoice_item.delete()
+
+    items_all = InvoiceItem.objects.filter(invoice=invoice)
+    st = 0
+    for each in items_all:
+        st = st + each.total
+    invoice.total = st 
+    invoice.balance_due = st
+    
+    #client = invoice.job.client
+    #client.credit_amount = client.credit_amount - sub_total 
+    #client.save()
+    invoice.save()
+
+    messages.add_message(request, messages.SUCCESS, "Invoice item updated")
+    
+    return redirect ("invoices:view", invoice_id=invoice_id)
 
 
 def AddPaymentToInvoice(request, invoice_id):

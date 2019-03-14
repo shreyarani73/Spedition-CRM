@@ -23,8 +23,8 @@ class Invoice(models.Model):
     invoice_id = models.CharField(max_length=150, blank=True, null=True, unique=True)
     due_date = models.DateField(blank=True, null=True)    
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    total = models.FloatField(default=0.00)
-    balance_due = models.FloatField(default=0.00)
+    total = models.FloatField(default=0.00, blank=True, null=True)
+    balance_due = models.FloatField(default=0.00, blank=True, null=True)
 
     def __str__(self):
         return "Invoice Id: " + str(self.pk)
