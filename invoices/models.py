@@ -18,6 +18,7 @@ PAYMENT_MODES = (
 )
 
 class Invoice(models.Model):    
+    #customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     date_added = models.DateField(default=timezone.now)
     invoice_id = models.CharField(max_length=150, blank=True, null=True, unique=True)
     due_date = models.DateField(blank=True, null=True)    
