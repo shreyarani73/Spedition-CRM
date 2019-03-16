@@ -1,8 +1,11 @@
+import io
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Invoice, InvoiceItem, Payments
+from .models import Invoice, InvoiceItem, Payments, Customer
 from .forms import NewInvoice, InvoiceItemForm, NewInvoiceItemForm, InvoicePaymentForm, NewInvoicePaymentForm
 from django.contrib import messages
+from django.http import HttpResponse
+from .utils import render_to_pdf
 
 def Index(request):
     invoices = Invoice.objects.all()
@@ -105,3 +108,27 @@ def AddPaymentToInvoice(request, invoice_id):
     invoice.save()
 
     return redirect("invoices:view", invoice_id=invoice_id)
+
+class invoice_as_pdf(View):
+    @staticmethod
+    def get(request,invoice_id): 
+        invoice = Invoice.objects.get(pk=invoice_id)
+        customer = invoice.job.client
+        invoice_items = InvoiceItem.objects.filter(invoice=invoice)
+        payments = Payments.objects.filter(invoice=invoice)
+         
+        #if invoice.job.shipping_to = "New Delhi":
+         #   cgst=sgst=invoice_items.tax_rate/2
+          #  else:
+           #     cgst=0.00
+
+        context = {
+          'invoice': invoice,
+          'customer':customer,
+          'invoice_items': invoice_items,
+          'payments':payments,
+          #'cgst':cgst,
+          #'sgst':sgst
+        }
+        pdf = render_to_pdf('invoices/pdf.html', context)
+        return HttpResponse(pdf, content_type='application/pdf')

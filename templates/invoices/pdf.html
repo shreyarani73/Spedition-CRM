@@ -1,0 +1,165 @@
+{% load staticfiles %}
+
+<DOCTYPE!>
+
+<html>
+
+<style>
+	
+body{
+	width: 650px;	
+    font-size: 10px;
+}
+.table1 tr, .table1 td, .table1 th {
+	border: 1px solid black;
+}
+.underline{
+	border-bottom: 1px solid black;
+	width: 100%;
+	display: block;
+}
+.table1{
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 100%;
+}
+.table2{
+	width:50%;
+	
+}
+.table2 th{
+	text-align:right;
+}
+.table3{
+	width:100%;
+}
+.table3 th{
+	text-align:left;
+}
+.table4 th{
+	text-align: right;
+}
+div.a {
+	text-align:right;
+	margin-right:250px;
+}
+/* .img{
+float:left;
+} */
+div.b{
+margin-left:20%;
+}
+</style>
+
+
+	<body>
+	<div class="img" style="margin-bottom:10px;">
+	<center><img style="max-width:650px;" src="http://onlinepayment.icsiiip.com/static/registration/icsiiiplogo.png"/></div></center>
+	<div class="b">
+	<p style="font-size:15px; margin-left:-100px; text-align: center;">3rd Floor, 22, Institutional Area, Lodi Road, New Delhi - 110003<br>
+	Phone: 011-45341099/45341041/45341035 | Email: info@icsiipa.com | Web: www.icsiiip.com
+	</p>
+	<p style="font-weight:bold;">GST No.: 07AAECI3095G1ZJ | CIN: U7499DL2016NPL308625 | State Code: 07 </p>
+	</div>
+	<p style="text-align:center;>
+	<span class="underline" style="border-top: 1px solid black; font-size:15px;">
+		<strong>TAX INVOICE</strong>
+	</span>
+	<span class="underline" style="border-bottom: 1px solid black; font-size:15px;">
+		<!--<strong>{{msg}}</strong>-->
+	</span>
+	</p>
+	<table class="table3">
+	<tr>
+	<th>Invoice No. :</th>
+	<th style="font-weight:strong;">{{invoice.invoice_id}}</th>
+	<th style="font-weight:strong;">Date:{{invoice.date_added|date:"d/m/Y"}} <th>
+	<th></th>
+	</tr>
+	<tr>
+	<th>Customer name:</th>
+	<th>{{customer.first_name}} {{customer.last_name}}</th>
+	</tr>
+	<tr>
+	<th>GSTIN:</th>
+	<th>{{customer.gstin}}</th>
+	</tr>
+	<tr>
+	<th>Billing Address:</th>
+	<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
+	<th>Shipping Address:</th>
+	<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
+	</tr>
+	<tr>
+	<th>State:</th>
+	<th>{{customer.state}} </th>
+	<tr>
+	<th>Place of Supply:</th>
+	<th>Delhi</th>
+	</tr>
+	</table>
+	  
+	<br>
+		
+	<hr>
+	<table class="table3">
+	  <th>S.No.</th>
+	  <th>Item Description</th>
+	  <th>Qty</th>
+	  <th>Rate/Item</th>
+	  <!--<th>Taxable Amt</th>-->
+	  <th>Tax rate</th>
+	  <th>Total</th>
+	</tr>
+	  {% for each in invoice_items %}
+	 <tr>
+	  <td>{{each.serial_number}}</t>
+	  <td>{{each.name}}</td>
+	  <td>{{each.quantity}}</td>
+	  <td>{{each.rate}}</td>
+	  <td>{{customer.gst}}</td>
+	  <td>{{each.total}}</td>
+	  </tr>
+	  {% endfor %}
+	  </table>
+	  <table class="table4">
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Subtotal:</th>
+				<th></th>
+			</tr>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Sgst:</th>
+				<th></th>
+			</tr>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Cgst:</th>
+				<th></th>
+			</tr>
+	  	<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Total:</th>
+				<th></th>
+			</tr>
+	</table>
+	<h5>Dear Sir/Madam,</h5>
+	lorem ipsum dolo simet
+	<br>
+	<p style="text-align: right;"> Sd/-</p>
+	<p style="text-align:right;">Authorised Signatory</p>	
+	</body>
+	</html>
