@@ -159,13 +159,11 @@ def DeleteInvoiceItem(request, invoice_id, invoice_item_id):
 def AddPaymentToInvoice(request, invoice_id):
     invoice = Invoice.objects.get(pk=invoice_id)
     form = NewInvoicePaymentForm(request.POST)
-    payment = form.save(commit=False)
+    form.save()
     
     invoice.balance_due = invoice.balance_due - payment.amount
     client = invoice.job.client
     client.credit_amount = client.credit_amount + payment.amount
-    
-    payment.save()
     invoice.save()
 
     return redirect("invoices:view", invoice_id=invoice_id)
@@ -188,16 +186,16 @@ class invoice_as_pdf(View):
         else:
             for each in invoice_items:
                 sgst=each.tax_rate
-                cgst=0.00
-                sgst_amt = (invoice.total*cgst)/100
+                cgst_amt = 0.00
+                sgst_amt = (invoice.total*cgst_amt)/100
                 pay_amt = invoice.total + cgst_amt + sgst_amt
 
         context = {
           'invoice': invoice,
           'customer':customer,
           'invoice_items': invoice_items,
-          'payments':payments,
-          'cgst':cgst,
+          'payments':payments, 
+          'cgst':cgst_amt,
           'sgst':sgst,
           'pay_amt':pay_amt
         }
