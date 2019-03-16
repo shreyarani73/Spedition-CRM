@@ -132,7 +132,8 @@
                     </table>
 
                     
-                    <input type="submit" name="submit-job-form" value="Save this invoice" class="btn btn-success" />                
+                    <input type="submit" name="submit-job-form" value="Save this invoice" class="btn btn-success" />
+                    <a href="{% url "invoices:invoicepdf" invoice.id %}"><button class="btn btn-sucess">Generate PDF</button></a>                
             </div>
         </div>
     </div>
