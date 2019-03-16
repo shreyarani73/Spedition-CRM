@@ -80,14 +80,8 @@ def NewInvoiceItem(request, invoice_id):
 
     invoice_item.total = sub_total
 
-<<<<<<< HEAD
-    invoice.total = invoice.total + invoice_item.total
-||||||| merged common ancestors
-    invoice.total = invoice.total + sub_total
-=======
     invoice.total = invoice.total + sub_total
     invoice.balance_due = invoice.balance_due + sub_total
->>>>>>> 85985977b07dcf0e8a34d8e2c4821dd1945c7bdd
     
     client = invoice.job.client
     client.credit_amount = client.credit_amount - sub_total
