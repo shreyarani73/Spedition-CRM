@@ -165,7 +165,8 @@ def AddPaymentToInvoice(request, invoice_id):
     client.save()
     payment.save()
     invoice.save()
-
+    
+    messages.add_message(request, message.SUCCESS, "Payment added")
     return redirect("invoices:view", invoice_id=invoice_id)
 
 
@@ -182,6 +183,7 @@ def updatePayment(request, invoice_id, payment_id):
     invoice.balance_due = invoices_sum["total__sum"]-payments_sum["amount__sum"]
     invoice.save()
 
+    messages.add_message(request, messsage.SUCCESS, "Payment Updated") 
     return redirect("invoices:view", invoice_id=invoice_id)
 
 def deletePayment(request, invoice_id, payment_id):
@@ -204,6 +206,6 @@ def deletePayment(request, invoice_id, payment_id):
     invoice.balance_due = amount_due
     invoice.save()
 
-    messages.add_message(request, messages.SUCCESS, "Payment has been deleted")
+    messages.add_message(request, messages.SUCCESS, "Payment deleted")
 
     return redirect("invoices:view", invoice_id=invoice_id)
