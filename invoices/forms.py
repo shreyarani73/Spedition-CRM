@@ -24,6 +24,14 @@ class NewInvoiceItemForm(ModelForm):
             "total": forms.TextInput(attrs={"disabled":True})
         }
 
+class InvoiceItemUpdateForm(ModelForm):
+    class Meta:
+        model = InvoiceItem
+        exclude = ["invoice", "serial_number"]
+        widgets = {
+            "total": forms.TextInput(attrs={"disabled":True})
+        }
+
 class InvoicePaymentForm(ModelForm):
     class Meta:
         model = Payments

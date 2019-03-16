@@ -23,17 +23,20 @@
                 <h4>Invoice ID: {{invoice.invoice_id}}</h4>                
                 <hr />
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <strong>Date issued:</strong> {{invoice.date_added}}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <strong>To client</strong>: {{invoice.job.client}}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         Due Date: {{invoice.due_date}}
                     </div>
-                    <div class="col-md-3">
-                        Total Amount Due: {{invoice.total}}
+                    <div class="col-md-2">
+                        Total Balance Due: ₹{{invoice.balance_due|floatformat:2}}
+                    </div>
+                    <div class="col-md-2">
+                        Total Amount: ₹{{invoice.total|floatformat:2}}
                     </div>
                 </div>
                 <hr />
@@ -64,17 +67,20 @@
                                     {% endfor %}
                                     <td><input type="submit" name="add-invoice-item" value="Add Invoice Item" class="btn btn-success"></td>
                                 </form>                                
-                            </tr>                            
+                            </tr>    
 
                             {% for each in invoice_items %}
-                            <form name="job" action="{% url "invoices:add" %}" method="post" class="form-horizontal form-material">
+                            <form name="update-invoice-item" action="{% url "invoices:update-invoice-item" invoice.id each.id %}" method="post" class="form-horizontal form-material">
+                                {% csrf_token %}
                                 <tr>
                                     <td>{{forloop.counter}}</td>
-                                    {% for field in each %}                                        
+                                    {% for field in each.form %}                                        
                                         <td>
                                             {% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}
                                         </td>
                                     {% endfor %}
+                                    <td><input type="submit" name="update-invoice-item" value="Update" class="btn btn-success"></td>
+                                    <td><a href="{% url "invoices:delete-invoice-item" invoice.id each.id %}" class="btn btn-success"> Delete </a> </td>
                                 </tr>
                             </form>
                             {% endfor %}    
@@ -108,14 +114,17 @@
                             </tr>                            
 
                             {% for each in payment_forms %}
-                            <form name="job" action="{% url "invoices:add" %}" method="post" class="form-horizontal form-material">
+                            <form name="update-payment" action="{% url "invoices:update-payment" invoice.id each.id %}" method="post" class="form-horizontal form-material">
+                                {% csrf_token %}
                                 <tr>
                                     <td>{{forloop.counter}}</td>
-                                    {% for field in each %}                                        
+                                    {% for field in each.form %}                                        
                                         <td>
                                             {% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}
                                         </td>
                                     {% endfor %}
+                                    <td><input type="submit" value="Update" name="update" class="btn btn-success" /></td>
+                                    <td><a href="{% url "invoices:delete-payment" invoice.id each.id %}"  class="btn btn-success" >Delete</a></td>
                                 </tr>
                             </form>
                             {% endfor %}    

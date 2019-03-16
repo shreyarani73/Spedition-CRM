@@ -18,11 +18,13 @@ PAYMENT_MODES = (
 )
 
 class Invoice(models.Model):    
+    #customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     date_added = models.DateField(default=timezone.now)
     invoice_id = models.CharField(max_length=150, blank=True, null=True, unique=True)
     due_date = models.DateField(blank=True, null=True)    
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    total = models.FloatField(default=0.00)
+    total = models.FloatField(default=0.00, blank=True, null=True)
+    balance_due = models.FloatField(default=0.00, blank=True, null=True)
 
     def __str__(self):
         return "Invoice Id: " + str(self.pk)
@@ -38,6 +40,7 @@ class InvoiceItem(models.Model):
     exchange_rate = models.FloatField(default=1.00)
     tax_rate = models.FloatField(default=18.00)
     total = models.FloatField(blank=True, null=True)
+    
 
     def __str__(self):
         return "Invoice item for invoice id:" + str(self.invoice)

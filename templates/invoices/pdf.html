@@ -37,27 +37,27 @@ body{
 	text-align:left;
 }
 .table4 th{
-	text-align: right;
+	text-align:justify;
 }
 div.a {
 	text-align:right;
 	margin-right:250px;
 }
-/* .img{
-float:left;
-} */
 div.b{
 margin-left:20%;
 }
+/* .img{
+float:left;
+} */
 </style>
 
 
 	<body>
 	<div class="img" style="margin-bottom:10px;">
-	<center><img style="max-width:650px;" src="http://onlinepayment.icsiiip.com/static/registration/icsiiiplogo.png"/></div></center>
+	<center><img style="max-width:650px;" src=""{% static 'assets/images/logo.png' %}" "/></div></center>
 	<div class="b">
-	<p style="font-size:15px; margin-left:-100px; text-align: center;">3rd Floor, 22, Institutional Area, Lodi Road, New Delhi - 110003<br>
-	Phone: 011-45341099/45341041/45341035 | Email: info@icsiipa.com | Web: www.icsiiip.com
+	<p style="font-size:15px; margin-left:-100px; text-align: center;">607, 6th Floor, Gagandeep Building, Rajendra Place, New Delhi-110008. (INDIA)<br>
+	Phone: +91-11-49821313 | Email:  contact@speditionindia.com | Web: www.speditionindia.com
 	</p>
 	<p style="font-weight:bold;">GST No.: 07AAECI3095G1ZJ | CIN: U7499DL2016NPL308625 | State Code: 07 </p>
 	</div>
@@ -71,10 +71,11 @@ margin-left:20%;
 	</p>
 	<table class="table3">
 	<tr>
-	<th>Invoice No. :</th>
-	<th style="font-weight:strong;">{{invoice.invoice_id}}</th>
-	<th style="font-weight:strong;">Date:{{invoice.date_added|date:"d/m/Y"}} <th>
-	<th></th>
+		<th>Invoice No. :</th>
+		<th>{{invoice.invoice_id}}</th>
+		<th></th>
+		<th>Date:</th>
+		<th>{{invoice.date_added|date:"d/m/Y"}}</th>
 	</tr>
 	<tr>
 	<th>Customer name:</th>
@@ -87,6 +88,7 @@ margin-left:20%;
 	<tr>
 	<th>Billing Address:</th>
 	<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
+	<th></th>
 	<th>Shipping Address:</th>
 	<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
 	</tr>
@@ -128,16 +130,8 @@ margin-left:20%;
 				<th></th>
 				<th></th>
 				<th></th>
-				<th>Subtotal:</th>
-				<th>{{}}</th>
-			</tr>
-			<tr>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
 				<th>Sgst:</th>
-				<th>{{}}</th>
+				<th style="text-align:left";>{{sgst}}</th>
 			</tr>
 			<tr>
 				<th></th>
@@ -145,7 +139,7 @@ margin-left:20%;
 				<th></th>
 				<th></th>
 				<th>Cgst:</th>
-				<th>{{}}</th>
+				<th  style="text-align:left";>{{cgst}}</th>
 			</tr>
 	  	<tr>
 				<th></th>
@@ -153,7 +147,7 @@ margin-left:20%;
 				<th></th>
 				<th></th>
 				<th>Total:</th>
-				<th>{{}}</th>
+				<th style="text-align:left";>{{pay_amt}}</th>
 			</tr>
 	</table>
 	<h5>Dear Sir/Madam,</h5>
