@@ -117,10 +117,13 @@ class invoice_as_pdf(View):
         invoice_items = InvoiceItem.objects.filter(invoice=invoice)
         payments = Payments.objects.filter(invoice=invoice)
          
-        #if invoice.job.shipping_to = "New Delhi":
-         #   cgst=sgst=invoice_items.tax_rate/2
-          #  else:
-           #     cgst=0.00
+        #if invoice.job.shipping_to == "New Delhi":
+            #sgst=cgst=invoice_items.tax_rate/2
+            #sgst=invoice_items.tax_rate/2
+            #utgst=0.00
+        #else:
+           # cgst=0.00
+           # utgst=sgst=invoice_items.tax_rate
 
         context = {
           'invoice': invoice,
