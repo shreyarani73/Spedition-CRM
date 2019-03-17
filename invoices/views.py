@@ -73,17 +73,41 @@ def NewInvoiceItem(request, invoice_id):
     form = NewInvoiceItemForm(request.POST)
     invoice_item = form.save(commit=False)
     invoice_item.invoice = invoice
-    sub_total = invoice_item.quantity * invoice_item.rate * invoice_item.exchange_rate
-    tax = sub_total * invoice_item.tax_rate/100
-    sub_total = sub_total + tax
-    
-
-    invoice_item.total = sub_total
-
-    invoice.total = invoice.total + sub_total
-    invoice.balance_due = invoice.balance_due + sub_total
-    
+    invoice_item.sub_total = invoice_item.quantity * invoice_item.rate * invoice_item.exchange_rate
+    #tax = sub_total * invoice_item.tax_rate/100
+    #sub_total = sub_total + tax
+    #invoice_item.total = sub_total
+    #invoice.total = invoice.total + sub_total
+    #invoice.balance_due = invoice.balance_due + sub_total
     client = invoice.job.client
+    if client.gst:
+        if client.gst[:2] == "07" :
+            invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
+            invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
+            tax = invoice_item.cgst + invoice_item.sgst
+
+            invoice_item.total = invoice_item.sub_total + tax
+            invoice.total = invoice.total + invoice_item.total 
+            invoice.balance_due = invoice.balance_due + invoice_item.total
+
+        else:
+            invoice_item.igst = invoice_item.sub_total * invoice_item.tax_rate/100
+            tax = invoice_item.igst 
+
+            invoice_item.total = invoice_item.sub_total + tax 
+            invoice.total = invoice.total + invoice_item.total 
+            invoice.balance_due = invoice.balance_due + invoice_item.total
+
+    else : 
+        invoice_item.cgst = sub_total_old * invoice_item.tax_rate/200
+        invoice_item.sgst = sub_total_old * invoice_item.tax_rate/200
+        tax = invoice_item.cgst + invoice_item.sgst
+
+        invoice_item.total = invoice_item.sub_total + tax
+        invoice.total = invoice.total + invoice_item.total 
+        invoice.balance_due = invoice.balance_due + invoice_item.total
+
+  
     client.credit_amount = client.credit_amount - sub_total
     if client.credit_amount < 0:
         messages.add_message(request, messages.SUCCESS, "Credit amount not enough for client")
