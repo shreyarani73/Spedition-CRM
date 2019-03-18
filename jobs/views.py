@@ -16,7 +16,7 @@ def Index(request):
 
 
 class AddJob(View):
-    def get(self, request):
+    def get(self, request ):
         form = NewJobForm()
 
         return render(request, "jobs/add.html", {

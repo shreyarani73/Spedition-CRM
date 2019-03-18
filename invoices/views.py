@@ -76,17 +76,53 @@ def NewInvoiceItem(request, invoice_id):
     form = NewInvoiceItemForm(request.POST)
     invoice_item = form.save(commit=False)
     invoice_item.invoice = invoice
-    sub_total = invoice_item.quantity * invoice_item.rate * invoice_item.exchange_rate
-    tax = sub_total * invoice_item.tax_rate/100
-    sub_total = sub_total + tax
-    
-
-    invoice_item.total = sub_total
-
-    invoice.total = invoice.total + sub_total
-    invoice.balance_due = invoice.balance_due + sub_total
-    
+    invoice_item.sub_total = invoice_item.quantity * invoice_item.rate * invoice_item.exchange_rate
+    #tax = sub_total * invoice_item.tax_rate/100
+    #sub_total = sub_total + tax
+    #invoice_item.total = sub_total
+    #invoice.total = invoice.total + sub_total
+    #invoice.balance_due = invoice.balance_due + sub_total
     client = invoice.job.client
+    if client.gst:
+        if client.gst[:2] == "07" :
+            invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
+            invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
+            tax = invoice_item.cgst + invoice_item.sgst
+
+            invoice_item.total = invoice_item.sub_total + tax
+            invoice.total = invoice.total + invoice_item.total 
+            invoice.balance_due = invoice.balance_due + invoice_item.total
+
+        else:
+            invoice_item.igst = invoice_item.sub_total * invoice_item.tax_rate/100
+            tax = invoice_item.igst 
+
+            invoice_item.total = invoice_item.sub_total + tax 
+            invoice.total = invoice.total + invoice_item.total 
+            invoice.balance_due = invoice.balance_due + invoice_item.total
+
+    else : 
+        invoice_item.cgst = sub_total_old * invoice_item.tax_rate/200
+        invoice_item.sgst = sub_total_old * invoice_item.tax_rate/200
+        tax = invoice_item.cgst + invoice_item.sgst
+
+        invoice_item.total = invoice_item.sub_total + tax
+        invoice.total = invoice.total + invoice_item.total 
+        invoice.balance_due = invoice.balance_due + invoice_item.total
+    
+    items_all = InvoiceItem.objects.filter(invoice=invoice)
+    cg = 0
+    sg = 0 
+    ig = 0 
+    for each in items_all:
+        cg = cg + each.cgst
+        sg = sg + each.sgst
+        ig = ig + each.igst
+    invoice.cgst_net = cg
+    invoice.sgst_net = sg 
+    invoice.igst_net = ig 
+
+  
     client.credit_amount = client.credit_amount - sub_total
     if client.credit_amount < 0:
         messages.add_message(request, messages.SUCCESS, "Credit amount not enough for client")
@@ -165,7 +201,8 @@ def AddPaymentToInvoice(request, invoice_id):
     client = invoice.job.client
     client.credit_amount = client.credit_amount + payment.amount
     invoice.save()
-
+    
+    messages.add_message(request, message.SUCCESS, "Payment added")
     return redirect("invoices:view", invoice_id=invoice_id)
 
 class invoice_as_pdf(View):
@@ -217,6 +254,7 @@ def updatePayment(request, invoice_id, payment_id):
     invoice.balance_due = invoices_sum["total__sum"]-payments_sum["amount__sum"]
     invoice.save()
 
+    messages.add_message(request, messsage.SUCCESS, "Payment Updated") 
     return redirect("invoices:view", invoice_id=invoice_id)
 
 def deletePayment(request, invoice_id, payment_id):
@@ -239,6 +277,6 @@ def deletePayment(request, invoice_id, payment_id):
     invoice.balance_due = amount_due
     invoice.save()
 
-    messages.add_message(request, messages.SUCCESS, "Payment has been deleted")
+    messages.add_message(request, messages.SUCCESS, "Payment deleted")
 
     return redirect("invoices:view", invoice_id=invoice_id)
