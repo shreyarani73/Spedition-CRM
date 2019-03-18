@@ -1,8 +1,11 @@
+import io
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Invoice, InvoiceItem, Payments
 from .forms import NewInvoice, InvoiceItemForm, NewInvoiceItemForm, InvoicePaymentForm, NewInvoicePaymentForm
 from django.contrib import messages
+from django.http import HttpResponse
+from .utils import render_to_pdf
 from django.db.models import Sum
 
 def Index(request):
@@ -192,18 +195,50 @@ def DeleteInvoiceItem(request, invoice_id, invoice_item_id):
 def AddPaymentToInvoice(request, invoice_id):
     invoice = Invoice.objects.get(pk=invoice_id)
     form = NewInvoicePaymentForm(request.POST)
-    payment = form.save(commit=False)
+    form.save()
     
     invoice.balance_due = invoice.balance_due - payment.amount
     client = invoice.job.client
     client.credit_amount = client.credit_amount + payment.amount
-    
-    client.save()
-    payment.save()
     invoice.save()
     
     messages.add_message(request, message.SUCCESS, "Payment added")
     return redirect("invoices:view", invoice_id=invoice_id)
+
+class invoice_as_pdf(View):
+    @staticmethod
+    def get(request,invoice_id): 
+        invoice = Invoice.objects.get(pk=invoice_id)
+        customer = invoice.job.client
+        invoice_items = InvoiceItem.objects.filter(invoice=invoice)
+        payments = Payments.objects.filter(invoice=invoice)
+        
+        if invoice.job.shipping_to == "New Delhi":
+            for each in invoice_items:
+                cgst=each.tax_rate/2
+                sgst=cgst
+                cgst_amt = (invoice.total*cgst)/100
+                sgst_amt = (invoice.total*cgst)/100
+                pay_amt = invoice.total + cgst_amt + sgst_amt
+        else:
+            for each in invoice_items:
+                sgst=each.tax_rate
+                cgst_amt = 0.00
+                sgst_amt = (invoice.total*cgst_amt)/100
+                pay_amt = invoice.total + cgst_amt + sgst_amt
+
+        context = {
+          'invoice': invoice,
+          'customer':customer,
+          'invoice_items': invoice_items,
+          'payments':payments, 
+          'cgst':cgst_amt,
+          'sgst':sgst,
+          'pay_amt':pay_amt
+        }
+        pdf = render_to_pdf('invoices/pdf.html', context)
+        return HttpResponse(pdf, content_type='application/pdf')
+    #return redirect("invoices:view", invoice_id=invoice_id)
 
 
 def updatePayment(request, invoice_id, payment_id):

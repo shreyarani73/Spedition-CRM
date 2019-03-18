@@ -33,7 +33,7 @@
                         {% endfor %}                        
                     </div>
                     <input type="submit" name="submit-job-form" value="Update this quotation" class="btn btn-success" />
-                    <input type="submit" name="send-email" value="Send as email to client" class="btn btn-success" />
+                    <input type="submit" name="send-email" value="Send as email to client" class="btn btn-success" disabled />
                 </form>
                 <hr />
                 <h3>Quotation Items / Services to be rendered for client</h3><hr />
@@ -71,7 +71,7 @@
                                     <td>{% render_field field class="form-control form-control-line invoice-form" placeholder=field.label %}</td>
                                 {% endfor %}
                                 <td><input type="submit" value="Update" class="btn btn-success" /></td>
-                                <td>Delete</td>
+                                <td><a href="{% url "quotations:delete-quotation-item" quotation.id each.id %}"  class="btn btn-success">Delete</a></td>
                             </tr>
                         </form>
                         {% endfor %}
