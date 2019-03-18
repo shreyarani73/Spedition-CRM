@@ -11,7 +11,7 @@ class NewInvoice(ModelForm):
 class InvoiceItemForm(ModelForm):
     class Meta:
         model = InvoiceItem
-        exclude = ["invoice", "serial_number"]
+        exclude = ["invoice", "serial_number", "cgst", "sgst", "igst", "sub_total"]
         widgets = {
             "total": forms.TextInput(attrs={"disabled":True})
         }
@@ -19,9 +19,10 @@ class InvoiceItemForm(ModelForm):
 class NewInvoiceItemForm(ModelForm):
     class Meta:
         model = InvoiceItem
-        exclude = ["invoice", "serial_number"]
+        exclude = ["invoice", "serial_number", "cgst", "sgst", "igst", "sub_total"]
         widgets = {
             "total": forms.TextInput(attrs={"disabled":True})
+         
         }
 
 class InvoiceItemUpdateForm(ModelForm):

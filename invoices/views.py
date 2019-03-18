@@ -106,6 +106,18 @@ def NewInvoiceItem(request, invoice_id):
         invoice_item.total = invoice_item.sub_total + tax
         invoice.total = invoice.total + invoice_item.total 
         invoice.balance_due = invoice.balance_due + invoice_item.total
+    
+    items_all = InvoiceItem.objects.filter(invoice=invoice)
+    cg = 0
+    sg = 0 
+    ig = 0 
+    for each in items_all:
+        cg = cg + each.cgst
+        sg = sg + each.sgst
+        ig = ig + each.igst
+    invoice.cgst_net = cg
+    invoice.sgst_net = sg 
+    invoice.igst_net = ig 
 
   
     client.credit_amount = client.credit_amount - sub_total
