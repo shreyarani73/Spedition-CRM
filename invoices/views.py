@@ -86,7 +86,7 @@ def NewInvoiceItem(request, invoice_id):
     if client.gst:
         if client.gst[:2] == "07" :
             invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
-            invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
+            invoice_item.sgst = invoice_item.cgst
             tax = invoice_item.cgst + invoice_item.sgst
 
             invoice_item.total = invoice_item.sub_total + tax
