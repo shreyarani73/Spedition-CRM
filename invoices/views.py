@@ -77,6 +77,8 @@ def NewInvoiceItem(request, invoice_id):
     invoice_item = form.save(commit=False)
     invoice_item.invoice = invoice
     invoice_item.sub_total = invoice_item.quantity * invoice_item.rate * invoice_item.exchange_rate
+    #invoice_item.sub_total = invoice_item.sub_total + sub_total_old
+    #print(sub_total_old)
     #tax = sub_total * invoice_item.tax_rate/100
     #sub_total = sub_total + tax
     #invoice_item.total = sub_total
@@ -88,6 +90,7 @@ def NewInvoiceItem(request, invoice_id):
             invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
             invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
             tax = invoice_item.cgst + invoice_item.sgst
+            #invoice_item.tax = tax
 
             invoice_item.total = invoice_item.sub_total + tax
             invoice.total = invoice.total + invoice_item.total 
@@ -95,17 +98,18 @@ def NewInvoiceItem(request, invoice_id):
 
         else:
             invoice_item.igst = invoice_item.sub_total * invoice_item.tax_rate/100
-            tax = invoice_item.igst 
+            tax = invoice_item.igst
+            #invoice_item.tax = tax 
 
             invoice_item.total = invoice_item.sub_total + tax 
             invoice.total = invoice.total + invoice_item.total 
             invoice.balance_due = invoice.balance_due + invoice_item.total
 
     else : 
-        invoice_item.cgst = sub_total_old * invoice_item.tax_rate/200
-        invoice_item.sgst = sub_total_old * invoice_item.tax_rate/200
+        invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
+        invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
         tax = invoice_item.cgst + invoice_item.sgst
-
+        #invoice_item.tax = tax
         invoice_item.total = invoice_item.sub_total + tax
         invoice.total = invoice.total + invoice_item.total 
         invoice.balance_due = invoice.balance_due + invoice_item.total
@@ -114,16 +118,24 @@ def NewInvoiceItem(request, invoice_id):
     cg = 0
     sg = 0 
     ig = 0 
+    st = 0
+    tx = 0
     for each in items_all:
         cg = cg + each.cgst
         sg = sg + each.sgst
         ig = ig + each.igst
+        st = st + each.sub_total
+        #tx = tx + each.tax
     invoice.cgst_net = cg
     invoice.sgst_net = sg 
     invoice.igst_net = ig 
+    invoice.sub_total = st
+    #invoice.tax_net = tx
 
-  
-    client.credit_amount = client.credit_amount - sub_total
+    invoice.save()
+    invoice_item.save()
+
+    client.credit_amount = client.credit_amount - invoice_item.sub_total
     if client.credit_amount < 0:
         messages.add_message(request, messages.SUCCESS, "Credit amount not enough for client")
         return redirect("invoices:view", invoice_id=invoice_id)
@@ -152,10 +164,13 @@ def UpdateInvoiceItem(request, invoice_id, invoice_item_id):
     update_item.save()
     items_all = InvoiceItem.objects.filter(invoice=invoice)
     st = 0
+    nt = 0
     for each in items_all:
-        st = st + each.total 
-    invoice.total = st
-    invoice.balance_due = st
+        nt = nt + each.total 
+        st= st + each.sub_total
+    invoice.total = nt
+    invoice.balance_due = nt
+    invoice.sub_total = st
 
     client = invoice.job.client
     client.credit_amount = client.credit_amount - sub_total
@@ -177,10 +192,13 @@ def DeleteInvoiceItem(request, invoice_id, invoice_item_id):
 
     items_all = InvoiceItem.objects.filter(invoice=invoice)
     st = 0
+    nt = 0
     for each in items_all:
-        st = st + each.total
-    invoice.total = st 
-    invoice.balance_due = st
+        nt = nt + each.total
+        st = st + each.sub_total
+    invoice.total = nt 
+    invoice.balance_due = nt
+    invoice.sub_total = st
     
     #client = invoice.job.client
     #client.credit_amount = client.credit_amount - sub_total 
@@ -222,18 +240,20 @@ class invoice_as_pdf(View):
                 pay_amt = invoice.total + cgst_amt + sgst_amt
         else:
             for each in invoice_items:
-                sgst=each.tax_rate
+                igst=each.tax_rate
                 cgst_amt = 0.00
-                sgst_amt = (invoice.total*cgst_amt)/100
-                pay_amt = invoice.total + cgst_amt + sgst_amt
+                sgst_amt = 0.00
+                igst_amt = (invoice.total*igst)/100
+                pay_amt = invoice.total + igst_amt
 
         context = {
           'invoice': invoice,
           'customer':customer,
           'invoice_items': invoice_items,
           'payments':payments, 
-          'cgst':cgst_amt,
-          'sgst':sgst,
+          'cgst_amt':cgst_amt,
+          'sgst_amt':sgst_amt,
+          'igst_amt':igst_amt,
           'pay_amt':pay_amt
         }
         pdf = render_to_pdf('invoices/pdf.html', context)

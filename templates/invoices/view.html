@@ -33,6 +33,12 @@
                         Due Date: {{invoice.due_date}}
                     </div>
                     <div class="col-md-2">
+                        Sub Total Amount: ₹{{invoice.sub_total|floatformat:2}}
+                    </div>
+                    <!---<div class="col-md-2">
+                        Net tax: ₹{{invoice.tax_net|floatformat:2}}
+                    </div>-->
+                    <div class="col-md-2">
                         Total Balance Due: ₹{{invoice.balance_due|floatformat:2}}
                     </div>
                     <div class="col-md-2">
@@ -133,7 +139,7 @@
 
                     
                     <input type="submit" name="submit-job-form" value="Save this invoice" class="btn btn-success" />
-                    <a href="{% url "invoices:invoicepdf" invoice.id %}"><button class="btn btn-sucess">Generate PDF</button></a>                
+                    <a href="{% url "invoices:invoicepdf" invoice.id %}"><button class="btn btn-success">Generate PDF</button></a>                
             </div>
         </div>
     </div>
