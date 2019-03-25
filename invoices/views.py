@@ -91,10 +91,13 @@ def NewInvoiceItem(request, invoice_id):
             invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
             tax = invoice_item.cgst + invoice_item.sgst
             #invoice_item.tax = tax
-
             invoice_item.total = invoice_item.sub_total + tax
             invoice.total = invoice.total + invoice_item.total 
             invoice.balance_due = invoice.balance_due + invoice_item.total
+            invoice.sub_total = invoice.sub_total + invoice_item.sub_total
+            invoice.cgst_net = invoice.cgst_net + invoice_item.cgst
+            invoice.sgst_net = invoice.sgst_net + invoice_item.sgst
+
 
         else:
             invoice_item.igst = invoice_item.sub_total * invoice_item.tax_rate/100
@@ -104,6 +107,8 @@ def NewInvoiceItem(request, invoice_id):
             invoice_item.total = invoice_item.sub_total + tax 
             invoice.total = invoice.total + invoice_item.total 
             invoice.balance_due = invoice.balance_due + invoice_item.total
+            invoice.sub_total = invoice.sub_total + invoice_item.sub_total
+            invoice.igst_net = invoice.igst_net + invoice_item.igst
 
     else : 
         invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
@@ -113,23 +118,27 @@ def NewInvoiceItem(request, invoice_id):
         invoice_item.total = invoice_item.sub_total + tax
         invoice.total = invoice.total + invoice_item.total 
         invoice.balance_due = invoice.balance_due + invoice_item.total
+        invoice.sub_total = invoice.sub_total + invoice_item.sub_total 
+        invoice.cgst_net = invoice.cgst_net + invoice_item.cgst
+        invoice.sgst_net = invoice.sgst_net + invoice_item.sgst
+
     
-    items_all = InvoiceItem.objects.filter(invoice=invoice)
-    cg = 0
-    sg = 0 
-    ig = 0 
-    st = 0
-    tx = 0
-    for each in items_all:
-        cg = cg + each.cgst
-        sg = sg + each.sgst
-        ig = ig + each.igst
-        st = st + each.sub_total
+    #items_all = InvoiceItem.objects.filter(invoice=invoice)
+    #cg = 0
+    #sg = 0 
+    #ig = 0 
+    #st = 0
+    #tx = 0
+    #for each in items_all:
+    #    cg = cg + each.cgst
+    #    sg = sg + each.sgst
+    #    ig = ig + each.igst
+    #    st = st + each.sub_total
         #tx = tx + each.tax
-    invoice.cgst_net = cg
-    invoice.sgst_net = sg 
-    invoice.igst_net = ig 
-    invoice.sub_total = st
+    #invoice.cgst_net = cg
+    #invoice.sgst_net = sg 
+    #invoice.igst_net = ig 
+    #invoice.sub_total = st
     #invoice.tax_net = tx
 
     invoice.save()
