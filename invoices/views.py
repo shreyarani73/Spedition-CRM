@@ -89,39 +89,42 @@ def NewInvoiceItem(request, invoice_id):
         if client.gst[:2] == "07" :
             invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
             invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
-            tax = invoice_item.cgst + invoice_item.sgst
+            invoice_item.tax = invoice_item.cgst + invoice_item.sgst
             #invoice_item.tax = tax
-            invoice_item.total = invoice_item.sub_total + tax
+            invoice_item.total = invoice_item.sub_total + invoice_item.tax
             invoice.total = invoice.total + invoice_item.total 
             invoice.balance_due = invoice.balance_due + invoice_item.total
             invoice.sub_total = invoice.sub_total + invoice_item.sub_total
             invoice.cgst_net = invoice.cgst_net + invoice_item.cgst
             invoice.sgst_net = invoice.sgst_net + invoice_item.sgst
+            invoice.tax_net = invoice.tax_net + invoice_item.tax
             #invoice.tax_net = invoice.tax_net + invoice_item 
 
 
         else:
             invoice_item.igst = invoice_item.sub_total * invoice_item.tax_rate/100
-            tax = invoice_item.igst
+            invoice_item.tax = invoice_item.igst
             #invoice_item.tax = tax 
 
-            invoice_item.total = invoice_item.sub_total + tax 
+            invoice_item.total = invoice_item.sub_total + invoice_item.tax 
             invoice.total = invoice.total + invoice_item.total 
             invoice.balance_due = invoice.balance_due + invoice_item.total
             invoice.sub_total = invoice.sub_total + invoice_item.sub_total
             invoice.igst_net = invoice.igst_net + invoice_item.igst
+            invoice.tax_net = invoice.tax_net + invoice_item.tax
 
     else : 
         invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
         invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
-        tax = invoice_item.cgst + invoice_item.sgst
+        invoice_item.tax = invoice_item.cgst + invoice_item.sgst
         #invoice_item.tax = tax
-        invoice_item.total = invoice_item.sub_total + tax
+        invoice_item.total = invoice_item.sub_total + invoice_item.tax
         invoice.total = invoice.total + invoice_item.total 
         invoice.balance_due = invoice.balance_due + invoice_item.total
         invoice.sub_total = invoice.sub_total + invoice_item.sub_total 
         invoice.cgst_net = invoice.cgst_net + invoice_item.cgst
         invoice.sgst_net = invoice.sgst_net + invoice_item.sgst
+        invoice.tax_net = invoice.tax_net + invoice_item.tax
 
     
     #items_all = InvoiceItem.objects.filter(invoice=invoice)
@@ -179,6 +182,7 @@ def UpdateInvoiceItem(request, invoice_id, invoice_item_id):
     update_item.sub_total = sub_total
     update_item.cgst = cgst
     update_item.sgst = sgst 
+    update_item.tax = tax
     #update_item.igst = igst 
 
     update_item.save()
@@ -188,18 +192,21 @@ def UpdateInvoiceItem(request, invoice_id, invoice_item_id):
     cg = 0 
     sg = 0
     ig = 0
+    tx = 0
     for each in items_all:
         nt = nt + each.total 
         st = st + each.sub_total
         sg = sg + each.sgst 
         cg = cg + each.cgst 
         ig = ig + each.igst
+        tx = tx + each.tax
     invoice.total = nt
     invoice.balance_due = nt
     invoice.sub_total = st
     invoice.cgst_net = cg
     invoice.sgst_net = sg
     invoice.igst_net = ig 
+    invoice.tax_net = tx
 
 
     client = invoice.job.client
@@ -226,18 +233,21 @@ def DeleteInvoiceItem(request, invoice_id, invoice_item_id):
     cg = 0 
     sg = 0
     ig = 0
+    tx = 0 
     for each in items_all:
         nt = nt + each.total
         st = st + each.sub_total
         sg = sg + each.sgst 
         cg = cg + each.cgst 
         ig = ig + each.igst
+        tx = tx + each.tax
     invoice.total = nt 
     invoice.balance_due = nt
     invoice.sub_total = st
     invoice.cgst_net = cg
     invoice.sgst_net = sg
     invoice.igst_net = ig 
+    invoice.tax_net = tx  
 
     
     #client = invoice.job.client

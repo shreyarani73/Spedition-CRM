@@ -29,6 +29,7 @@ class Invoice(models.Model):
     cgst_net = models.FloatField(default=0, blank=True, null=True)
     sgst_net = models.FloatField(default=0, blank=True, null=True)
     igst_net = models.FloatField(default=0, blank=True, null=True)
+    tax_net = models.FloatField(default=0, blank=True, null=True)
     
     
     def __str__(self):
@@ -46,6 +47,7 @@ class InvoiceItem(models.Model):
     tax_rate = models.FloatField(default=18.00)
     total = models.FloatField(blank=True, null=True)
     sub_total = models.FloatField(default=0.00, blank=True, null=True)
+    tax = models.FloatField(default=0, null=True, blank=True)
     cgst = models.FloatField(default=0)
     sgst = models.FloatField(default=0)
     igst = models.FloatField(default=0)
