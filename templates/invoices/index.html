@@ -41,8 +41,8 @@
                                     <td><a href="{% url "invoices:view" each.id %}">{{each.job.id}}</a></td>
                                     <td>{{each.job.client.company_name}}</td>
                                     <td>{{each.date_added}}</td>
-                                    <td>INR {{each.total}}</td>
-                                    <td>INR {{each.balance_due}}</td>
+                                    <td>INR {{each.total|floatformat:2}}</td>
+                                    <td>INR {{each.balance_due|floatformat:2}}</td>
                                     <td>{{each.due_date}}</td>
                                 </tr>
                             {% endfor %}
