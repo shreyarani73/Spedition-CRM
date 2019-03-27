@@ -109,8 +109,10 @@ float:left;
 	  <th>Item Description</th>
 	  <th>Qty</th>
 	  <th>Rate/Item</th>
-	  <!--<th>Taxable Amt</th>-->
-	  <th>Tax rate</th>
+		<th>Tax rate</th>
+		<th>Sgst rate</th>
+		<th>Cgst rate</th>
+		<th>Igst rate</th>
 	  <th>Total</th>
 	</tr>
 	  {% for each in invoice_items %}
@@ -119,7 +121,10 @@ float:left;
 	  <td>{{each.name}}</td>
 	  <td>{{each.quantity}}</td>
 	  <td>{{each.rate}}</td>
-	  <td>{{customer.gst}}</td>
+		<td>{{each.tax_rate}}</td>
+		<td>{{each.sgst}}</td>
+		<td>{{each.cgst}}</td>
+		<td>{{each.igst}}</td>
 	  <td>{{each.total}}</td>
 	  </tr>
 	  {% endfor %}
@@ -131,7 +136,7 @@ float:left;
 				<th></th>
 				<th></th>
 				<th>Sgst:</th>
-				<th style="text-align:left";>{{sgst}}</th>
+				<th style="text-align:left";>{{invoice.sgst_net}}</th>
 			</tr>
 			<tr>
 				<th></th>
@@ -139,7 +144,15 @@ float:left;
 				<th></th>
 				<th></th>
 				<th>Cgst:</th>
-				<th  style="text-align:left";>{{cgst}}</th>
+				<th  style="text-align:left";>{{invoice.cgst_net}}</th>
+			</tr>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Igst:</th>
+				<th  style="text-align:left";>{{invoice.igst_net}}</th>
 			</tr>
 	  	<tr>
 				<th></th>
@@ -147,7 +160,7 @@ float:left;
 				<th></th>
 				<th></th>
 				<th>Total:</th>
-				<th style="text-align:left";>{{pay_amt}}</th>
+				<th style="text-align:left";>{{invoice.total}}</th>
 			</tr>
 	</table>
 	<h5>Dear Sir/Madam,</h5>

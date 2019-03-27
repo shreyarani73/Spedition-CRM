@@ -45,17 +45,11 @@ class InvoiceItem(models.Model):
     rate = models.FloatField(default=1.00)
     exchange_rate = models.FloatField(default=1.00)
     tax_rate = models.FloatField(default=18.00)
-<<<<<<< HEAD
+
     total = models.FloatField(blank=True, null=True)
     sub_total = models.FloatField(default=0.00, blank=True, null=True)
-<<<<<<< HEAD
-=======
-    total = models.FloatField(blank=True, null=True) #not used 
-    sub_total = models.FloatField(blank=True, null=True)
->>>>>>> mojojojo
-=======
+
     tax = models.FloatField(default=0, null=True, blank=True)
->>>>>>> 50c9956bf070edcbf8c8269b4d887c724c621b70
     cgst = models.FloatField(default=0)
     sgst = models.FloatField(default=0)
     igst = models.FloatField(default=0)
