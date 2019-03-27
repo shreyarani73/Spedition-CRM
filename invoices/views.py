@@ -90,7 +90,7 @@ def NewInvoiceItem(request, invoice_id):
             invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
             invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
             invoice_item.tax = invoice_item.cgst + invoice_item.sgst
-            #invoice_item.tax = tax
+            
             invoice_item.total = invoice_item.sub_total + invoice_item.tax
             invoice.total = invoice.total + invoice_item.total 
             invoice.balance_due = invoice.balance_due + invoice_item.total
@@ -98,13 +98,12 @@ def NewInvoiceItem(request, invoice_id):
             invoice.cgst_net = invoice.cgst_net + invoice_item.cgst
             invoice.sgst_net = invoice.sgst_net + invoice_item.sgst
             invoice.tax_net = invoice.tax_net + invoice_item.tax
-            #invoice.tax_net = invoice.tax_net + invoice_item 
+            
 
 
         else:
             invoice_item.igst = invoice_item.sub_total * invoice_item.tax_rate/100
             invoice_item.tax = invoice_item.igst
-            #invoice_item.tax = tax 
 
             invoice_item.total = invoice_item.sub_total + invoice_item.tax 
             invoice.total = invoice.total + invoice_item.total 
@@ -117,7 +116,6 @@ def NewInvoiceItem(request, invoice_id):
         invoice_item.cgst = invoice_item.sub_total * invoice_item.tax_rate/200
         invoice_item.sgst = invoice_item.sub_total * invoice_item.tax_rate/200
         invoice_item.tax = invoice_item.cgst + invoice_item.sgst
-        #invoice_item.tax = tax
         invoice_item.total = invoice_item.sub_total + invoice_item.tax
         invoice.total = invoice.total + invoice_item.total 
         invoice.balance_due = invoice.balance_due + invoice_item.total
@@ -210,7 +208,7 @@ def UpdateInvoiceItem(request, invoice_id, invoice_item_id):
 
 
     client = invoice.job.client
-    client.credit_amount = client.credit_amount - sub_total
+    client.credit_amount = client.credit_amount - sub_total_net
     #invoice.total = invoice.total + sub_total
     #invoice.balance_due  = invoice.balance_due + sub_total
     client.save()
