@@ -146,15 +146,15 @@ def NewInvoiceItem(request, invoice_id):
     invoice.save()
     invoice_item.save()
 
-    client.credit_amount = client.credit_amount - invoice_item.sub_total
+    client.credit_amount = client.credit_amount - invoice_item.total
     if client.credit_amount < 0:
         messages.add_message(request, messages.SUCCESS, "Credit amount not enough for client")
-        return redirect("invoices:view", invoice_id=invoice_id)
+         return redirect("invoices:view", invoice_id=invoice_id)
     else:
         client.save()
 
-        invoice.save()
-        invoice_item.save()
+        #invoice.save()
+        #invoice_item.save()
 
         messages.add_message(request, messages.SUCCESS, "Invoice item added")
 
@@ -253,7 +253,7 @@ def DeleteInvoiceItem(request, invoice_id, invoice_item_id):
     #client.save()
     invoice.save()
 
-    messages.add_message(request, messages.SUCCESS, "Invoice item updated")
+    messages.add_message(request, messages.SUCCESS, "Invoice item deleted")
     
     return redirect ("invoices:view", invoice_id=invoice_id)
 
