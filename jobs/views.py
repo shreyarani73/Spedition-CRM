@@ -93,3 +93,13 @@ def edit_process(request, job_id, process_id):
     messages.add_message(request, messages.SUCCESS, "Process has been succesfully edited")
 
     return redirect("jobs:view", job_id=job_id)
+
+def delete_process(request, job_id, process_id):
+    process = Process.objects.get(id=process_id)
+    job = Job.objects.get(id=job_id)
+    process.delete()
+
+    messages.add_message(request, messages.SUCCESS, "Process has been succesfully deleted")
+
+    return redirect("jobs:view",job_id=job_id)
+
