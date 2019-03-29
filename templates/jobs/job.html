@@ -32,7 +32,7 @@
                             </div>
                         {% endfor %}                    
                     </div>
-                    <input type="submit" name="update-job" value="Update Job" class="btn btn-success" />
+                    <!---<input type="submit" name="update-job" value="Update Job" class="btn btn-success" />-->
                 </form>
             </div>
         </div>
@@ -63,6 +63,7 @@
                 <h4>Existing processes</h4><hr />
                 {% for each in processes %}                    
                     <form name="edit-process-{{each.id}}" action="{% url "jobs:edit-process" job.id each.id %}" method="post" class="form-horizontal form-material">
+                        {% csrf_token %}
                         <div class="row">                        
                             {% for field in each %}
                                 <div class="col-md-2 input-form">
@@ -71,7 +72,10 @@
                                 </div>
                             {% endfor %}
                             <div class="col-md-2 input-form">
-                                <input type="submit" value="Edit this process" class="btn btn-success" />
+                                <input type="submit" value="Edit process" class="btn btn-success small-b" />
+                                <br>
+                                <br>
+                                <a href="{% url "jobs:delete-process" job.id each.id %}" class="btn btn-success small-b"> Delete </a>
                             </div>                                                        
                         </div>
                     </form>                    
