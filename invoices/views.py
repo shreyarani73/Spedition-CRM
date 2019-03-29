@@ -149,7 +149,7 @@ def NewInvoiceItem(request, invoice_id):
     client.credit_amount = client.credit_amount - invoice_item.total
     if client.credit_amount < 0:
         messages.add_message(request, messages.SUCCESS, "Credit amount not enough for client")
-         return redirect("invoices:view", invoice_id=invoice_id)
+        return redirect("invoices:view", invoice_id=invoice_id)
     else:
         client.save()
 
