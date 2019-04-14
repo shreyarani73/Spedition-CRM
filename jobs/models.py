@@ -18,7 +18,7 @@ class JobCategory(models.Model):
         return self.name
 
 
-class Job(models.Model):
+class Job(models.Model): 
     date_added = models.DateField(default=timezone.now)
     client = models.ForeignKey(Customer, on_delete=models.CASCADE)
     job_category = models.ForeignKey(JobCategory, on_delete=models.CASCADE)

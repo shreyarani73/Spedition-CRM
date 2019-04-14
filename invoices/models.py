@@ -23,9 +23,15 @@ class Invoice(models.Model):
     invoice_id = models.CharField(max_length=150, blank=True, null=True, unique=True)
     due_date = models.DateField(blank=True, null=True)    
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    sub_total = models.FloatField(default=0.00, blank=True, null=True)
     total = models.FloatField(default=0.00, blank=True, null=True)
     balance_due = models.FloatField(default=0.00, blank=True, null=True)
-
+    cgst_net = models.FloatField(default=0, blank=True, null=True)
+    sgst_net = models.FloatField(default=0, blank=True, null=True)
+    igst_net = models.FloatField(default=0, blank=True, null=True)
+    tax_net = models.FloatField(default=0, blank=True, null=True)
+    
+    
     def __str__(self):
         return "Invoice Id: " + str(self.pk)
 
@@ -39,7 +45,14 @@ class InvoiceItem(models.Model):
     rate = models.FloatField(default=1.00)
     exchange_rate = models.FloatField(default=1.00)
     tax_rate = models.FloatField(default=18.00)
+
     total = models.FloatField(blank=True, null=True)
+    sub_total = models.FloatField(default=0.00, blank=True, null=True)
+
+    tax = models.FloatField(default=0, null=True, blank=True)
+    cgst = models.FloatField(default=0)
+    sgst = models.FloatField(default=0)
+    igst = models.FloatField(default=0)
     
 
     def __str__(self):

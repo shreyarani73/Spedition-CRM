@@ -28,7 +28,7 @@ body{
 	
 }
 .table2 th{
-	text-align:right;
+	text-align:left;
 }
 .table3{
 	width:100%;
@@ -69,7 +69,8 @@ float:left;
 		<!--<strong>{{msg}}</strong>-->
 	</span>
 	</p>
-	<table class="table3">
+	<div>
+	<table class="table2">
 	<tr>
 		<th>Invoice No. :</th>
 		<th>{{invoice.invoice_id}}</th>
@@ -78,39 +79,44 @@ float:left;
 		<th>{{invoice.date_added|date:"d/m/Y"}}</th>
 	</tr>
 	<tr>
-	<th>Customer name:</th>
-	<th>{{customer.first_name}} {{customer.last_name}}</th>
+		<th>Customer name:</th>
+		<th>{{customer.first_name}} {{customer.last_name}}</th>
 	</tr>
 	<tr>
-	<th>GSTIN:</th>
-	<th>{{customer.gstin}}</th>
+		<th>GSTIN:</th>
+		<th>{{customer.gstin}}</th>
 	</tr>
 	<tr>
-	<th>Billing Address:</th>
-	<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
-	<th></th>
-	<th>Shipping Address:</th>
-	<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
+		<th>Billing Address:</th>
+		<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
+		<th></th>
+		<th>Shipping Address:</th>
+		<th>{{customer.address1}} {{customer.address2|default:""}}, {{customer.city}}, {{customer.state}}-{{customer.pincode}}</th>
 	</tr>
 	<tr>
-	<th>State:</th>
-	<th>{{customer.state}} </th>
+		<th>State:</th>
+		<th>{{customer.state}} </th>
 	<tr>
-	<th>Place of Supply:</th>
-	<th>Delhi</th>
+		<th>Place of Supply:</th>
+		<th>Delhi</th>
 	</tr>
 	</table>
-	  
+	</div> 
 	<br>
 		
 	<hr>
-	<table class="table3">
+
+	<div>
+	<table class="table3"> 
+		<tr>
 	  <th>S.No.</th>
-	  <th>Item Description</th>
+	  <th>Item</th>
 	  <th>Qty</th>
 	  <th>Rate/Item</th>
-	  <!--<th>Taxable Amt</th>-->
-	  <th>Tax rate</th>
+		<th>Tax rate</th>
+		<th>Sgst rate</th>
+		<th>Cgst rate</th>
+		<th>Igst rate</th>
 	  <th>Total</th>
 	</tr>
 	  {% for each in invoice_items %}
@@ -119,19 +125,24 @@ float:left;
 	  <td>{{each.name}}</td>
 	  <td>{{each.quantity}}</td>
 	  <td>{{each.rate}}</td>
-	  <td>{{customer.gst}}</td>
+		<td>{{each.tax_rate}}</td>
+		<td>{{each.sgst}}</td>
+		<td>{{each.cgst}}</td>
+		<td>{{each.igst}}</td>
 	  <td>{{each.total}}</td>
 	  </tr>
 	  {% endfor %}
-	  </table>
-	  <table class="table4" border="1px">
+		</table>
+	</div>
+	<div>
+	  <table class="table4">
 			<tr>
 				<th></th>
 				<th></th>
 				<th></th>
 				<th></th>
 				<th>Sgst:</th>
-				<th style="text-align:left";>{{sgst}}</th>
+				<th style="text-align:left";>{{invoice.sgst_net}}</th>
 			</tr>
 			<tr>
 				<th></th>
@@ -139,7 +150,15 @@ float:left;
 				<th></th>
 				<th></th>
 				<th>Cgst:</th>
-				<th  style="text-align:left";>{{cgst}}</th>
+				<th  style="text-align:left";>{{invoice.cgst_net}}</th>
+			</tr>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th>Igst:</th>
+				<th  style="text-align:left";>{{invoice.igst_net|floatformat:2}}</th>
 			</tr>
 	  	<tr>
 				<th></th>
@@ -147,9 +166,10 @@ float:left;
 				<th></th>
 				<th></th>
 				<th>Total:</th>
-				<th style="text-align:left";>{{pay_amt}}</th>
+				<th style="text-align:left";>{{invoice.total}}</th>
 			</tr>
 	</table>
+</div>
 	<h5>Dear Sir/Madam,</h5>
 	lorem ipsum dolo simet
 	<br>

@@ -5,13 +5,13 @@ from .models import Invoice, InvoiceItem, Payments
 class NewInvoice(ModelForm):
     class Meta:
         model = Invoice
-        exclude = ["date_added", "total", "invoice_id"]
+        exclude = ["date_added", "total", "invoice_id", "balance_due", "cgst_net", "sgst_net", "igst_net"]
 
 
 class InvoiceItemForm(ModelForm):
     class Meta:
         model = InvoiceItem
-        exclude = ["invoice", "serial_number"]
+        exclude = ["invoice", "serial_number", "cgst", "sgst", "igst", "sub_total", "tax"]
         widgets = {
             "total": forms.TextInput(attrs={"disabled":True})
         }
@@ -19,9 +19,10 @@ class InvoiceItemForm(ModelForm):
 class NewInvoiceItemForm(ModelForm):
     class Meta:
         model = InvoiceItem
-        exclude = ["invoice", "serial_number"]
+        exclude = ["invoice", "serial_number", "cgst", "sgst", "igst", "sub_total", "tax"]
         widgets = {
             "total": forms.TextInput(attrs={"disabled":True})
+         
         }
 
 class InvoiceItemUpdateForm(ModelForm):

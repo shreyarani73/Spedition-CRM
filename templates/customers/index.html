@@ -42,7 +42,7 @@
                                     <td>{{each.first_name}}</td>
                                     <td>{{each.last_name}}</td>
                                     <td>{{each.email}}</td>
-                                    <td>{{each.credit_amount}}</td>
+                                    <td>{{each.credit_amount|floatformat:2}}</td>
                                     <td>{{each.approved}}</td>
                                 </tr>
                             {% endfor %}

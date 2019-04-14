@@ -22,7 +22,7 @@ def addQuotationItem(request, quotation_id):
 
     item.total = service_total + taxes
     quotation.service_total = quotation.service_total + service_total + taxes
-    item.save()    
+    item.save()  #operational error  
     quotation.save()
 
     messages.add_message(request, messages.SUCCESS, "Quotation item added succesfully")
