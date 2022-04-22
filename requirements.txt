@@ -17,7 +17,7 @@ Pmw==2.0.0
 preppy==2.7.0
 pycparser==2.19
 pyPdf==1.13
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 Pyphen==0.9.5
 pyRXP==2.1.2
 pytz==2018.9
